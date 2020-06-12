@@ -11,7 +11,7 @@ const Home = () => {
     const [city, setCity] = useState('');
 
     function handleNavigationPoints() {
-      if (!city === null || city.length == 0 || !uf === null || uf.length == 0) {
+      if (!city === null || city.length < 2 || !uf === null || uf.length < 2) {
         Vibration.vibrate(500);
         return;
       }

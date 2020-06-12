@@ -33,7 +33,6 @@ interface Params{
 const Points = () => {
   const navigation = useNavigation();
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const [loadingMap, setLoadingMap] = useState(false);
   const [items, setItems] = useState<Item[]>([]);
   const [points, setPoints] = useState<Point[]>([]);
   const [initialPosition, setInitialPosition] = useState<[number, number]>([0, 0]);
@@ -57,7 +56,6 @@ const Points = () => {
     }
     loadPosition();
   }, [])
-
 
   useEffect(() => {
     api.get('items').then(response => {
@@ -94,8 +92,8 @@ const Points = () => {
       setSelectedItems([...selectedItems, id]);
     }
   }
-  if (!loadingMap) {
-      return <LoadingPage/>
+  if (items.length == 0) {
+    return <LoadingPage/>
   }
   return (
     <>
@@ -107,7 +105,7 @@ const Points = () => {
       <Text style={styles.description}>Encontre um ponto de coleta.</Text>
       <View style={styles.mapContainer}>
         {initialPosition[0] !== 0 && (
-          <MapView onMapReady={() => setLoadingMap(true)}
+          <MapView
           initialRegion={{ latitude: initialPosition[0], longitude: initialPosition[1], latitudeDelta: 0.014, longitudeDelta: 0.014 }} 
           style={styles.map}>
           
