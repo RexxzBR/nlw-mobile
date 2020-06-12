@@ -33,6 +33,7 @@ interface Params{
 const Points = () => {
   const navigation = useNavigation();
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [loadingMap, setLoadingMap] = useState(false);
   const [items, setItems] = useState<Item[]>([]);
   const [points, setPoints] = useState<Point[]>([]);
   const [initialPosition, setInitialPosition] = useState<[number, number]>([0, 0]);
@@ -93,6 +94,9 @@ const Points = () => {
       setSelectedItems([...selectedItems, id]);
     }
   }
+  if (!loadingMap) {
+      return <LoadingPage/>
+  }
   return (
     <>
     <View style={styles.container}>
@@ -103,9 +107,10 @@ const Points = () => {
       <Text style={styles.description}>Encontre um ponto de coleta.</Text>
       <View style={styles.mapContainer}>
         {initialPosition[0] !== 0 && (
-          <MapView 
+          <MapView onMapReady={() => setLoadingMap(true)}
           initialRegion={{ latitude: initialPosition[0], longitude: initialPosition[1], latitudeDelta: 0.014, longitudeDelta: 0.014 }} 
           style={styles.map}>
+          
             {points.map(point => (
               <Marker key={String(point.id)} style={styles.mapMarker} onPress={() => handleNavigationDetail(point.id)} coordinate={{latitude: point.latitude, longitude: point.longitude}}>
                 <View style={styles.mapMarkerContainer}>
