@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "Ecoleta",
+    "slug": "ecoletaapk",
+    "sdkVersion": "37.0.0",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "version": "1.1.6",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#336045"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ecoleta.rexxzbr.nlw"
+    },
+    "android": {
+      "package": "com.ecoleta.rexxzbr.nlw"
+    }
+  }
+}
