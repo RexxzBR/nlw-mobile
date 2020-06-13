@@ -1,23 +1,49 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, ImageBackground, TextInput, KeyboardAvoidingView, Platform, Vibration } from 'react-native';
+import React, { useState, useEffect, ChangeEvent } from 'react';
+import { StyleSheet, Text, View, Image, ImageBackground, TextInput, KeyboardAvoidingView, Platform, Vibration, Picker } from 'react-native';
 import { Feather as Icon } from '@expo/vector-icons';
 import { RectButton } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import axios from '../../services/api';
+
+interface UF {
+  sigla: string,
+}
+interface City {
+  nome: string
+}
 
 const Home = () => {
   const navigation = useNavigation();
 
-  const [uf, setUf] = useState('');
-  const [city, setCity] = useState('');
+  const [ufs, setUfs] = useState<string[]>([]);
+  const [selectedUf, setSelectedUf] = useState('0');
+  const [cities, setCities] = useState<string[]>([]);
+  const [selectedCity, setSelectedCity] = useState('0');
 
   function handleNavigationPoints() {
-    if (!city === null || city.length < 2 || !uf === null || uf.length < 2) {
+    if (selectedCity === '0' || selectedUf === '0' || 
+    selectedUf === null || selectedCity === null) {
       Vibration.vibrate(500);
       return;
     }
-    navigation.navigate('Points', { uf, city });
+    navigation.navigate('Points', { selectedUf, selectedCity });
   }
 
+  useEffect(() => {
+    axios.get<UF[]>('https://servicodados.ibge.gov.br/api/v1/localidades/estados').then(response => {
+      const ufInitials = response.data.map(uf => uf.sigla);
+
+      setUfs(ufInitials);
+    })
+  }, []);
+
+  useEffect(() => {
+    axios.get<City[]>(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedUf}/municipios`).then(response => {
+      const cities = response.data.map(cities => cities.nome);
+
+      setCities(cities);
+    });
+  }, [selectedUf]);
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
@@ -32,22 +58,23 @@ const Home = () => {
             <Text style={styles.description}>Ajudamos pessoas a encontrarem pontos de coleta de forma eficiente</Text>
           </View>
         </View>
-
+        <Picker style={styles.input}
+          selectedValue={selectedUf}
+          onValueChange={(itemValue, itemIndex) => setSelectedUf(itemValue)}>
+          <Picker.Item label="Selecione uma UF" value={null}></Picker.Item>
+          {ufs.map(uf => (
+            <Picker.Item value={uf} label={uf} key={uf}></Picker.Item>
+          ))}
+        </Picker>
+        <Picker style={styles.input}
+          selectedValue={selectedCity}
+          onValueChange={(itemValue, itemIndex) => setSelectedCity(itemValue)}>
+          <Picker.Item label="Selecione uma cidade" value="selectState"></Picker.Item>
+          {cities.map(city => (
+            <Picker.Item value={city} label={city} key={city}></Picker.Item>
+          ))}
+        </Picker>
         <View style={styles.footer}>
-          <TextInput style={styles.input}
-            placeholder="Escolha o estado"
-            value={uf}
-            onChangeText={setUf}
-            maxLength={2}
-            autoCapitalize="characters"
-            autoCorrect={false}
-          ></TextInput>
-          <TextInput style={styles.input}
-            placeholder="Escolha a cidade"
-            value={city}
-            onChangeText={setCity}
-            autoCorrect={false}
-          ></TextInput>
           <RectButton style={styles.button} onPress={handleNavigationPoints}>
             <View
               style={styles.buttonIcon}>
@@ -62,24 +89,6 @@ const Home = () => {
     </KeyboardAvoidingView>
   );
 }
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    height: 60,
-    backgroundColor: '#FFF',
-    borderRadius: 10,
-    marginBottom: 8,
-    paddingHorizontal: 24,
-    fontSize: 16,
-  },
-  inputAndroid: {
-    height: 60,
-    backgroundColor: '#FFF',
-    borderRadius: 4,
-    marginBottom: 8,
-    paddingHorizontal: 24,
-    fontSize: 16,
-  },
-});
 
 const styles = StyleSheet.create({
   container: {
