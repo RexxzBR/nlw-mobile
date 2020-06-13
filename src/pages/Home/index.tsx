@@ -71,7 +71,7 @@ const Home = () => {
           onValueChange={(itemValue, itemIndex) => setSelectedCity(itemValue)}>
           <Picker.Item label="Selecione uma cidade" value="selectState"></Picker.Item>
           {cities.map(city => (
-            <Picker.Item value={city} label={city} key={city}></Picker.Item>
+            <Picker.Item  value={city} label={city} key={city}></Picker.Item>
           ))}
         </Picker>
         <View style={styles.footer}>
