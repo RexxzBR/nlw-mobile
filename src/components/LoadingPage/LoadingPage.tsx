@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Image, StyleSheet, Text} from 'react-native';
+import { View, Image, StyleSheet, Text, Animated, Easing } from 'react-native';
 
 const LoadingPage = () => {
     return (
         <View style={styles.centered}>
-            <Image source={require('../../assets/icon.png')}></Image>
+            <Animated.Image source={require('../../assets/icon.png')}/>
             <Text style={styles.loadingText}>Carregando...</Text>
         </View>
     );
@@ -18,8 +18,8 @@ const styles = StyleSheet.create({
     },
     loadingText: {
         fontFamily: 'Roboto_400Regular',
-        fontSize: 16,
-        marginTop: 8
+        fontSize: 18,
+        marginTop: 16,
     }
 })
 export default LoadingPage;
